@@ -58,8 +58,9 @@ All source code for `piledriver` is in `src/toolkit/piledriver*`.  Refinement
 will occur with time.  Suggestions welcome.
 
 
-TODO
-====
+To do
+=====
+
 The following items must be completed for this to be fully functional.
 1. Report stranded counts, etc.
 2. Report reference allele.
