@@ -62,6 +62,7 @@ To do
 =====
 
 The following items must be completed for this to be fully functional.
+
 1. Report stranded counts, etc.
 2. Report reference allele.
 3. Report uncovered positions.
