@@ -25,6 +25,7 @@ struct UTILS_EXPORT PileupAlignment {
     BamAlignment Alignment;
     int32_t PositionInAlignment;
     bool IsCurrentDeletion;
+    bool IsCurrentInsertion;
     bool IsNextDeletion;
     bool IsNextInsertion;
     int DeletionLength;
@@ -37,6 +38,7 @@ struct UTILS_EXPORT PileupAlignment {
         : Alignment(al)
         , PositionInAlignment(-1)
         , IsCurrentDeletion(false)
+        , IsCurrentInsertion(false)
         , IsNextDeletion(false)
         , IsNextInsertion(false)
         , DeletionLength(0)

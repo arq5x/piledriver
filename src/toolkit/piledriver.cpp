@@ -58,13 +58,13 @@ class PileDriverVisitor : public PileupVisitor {
                    << "num_G\t"
                    << "num_T\t"
                    << "num_D\t"
-                   << "num_I\t"
+                   //<< "num_I\t"
                    << "totQ_A\t"
                    << "totQ_C\t"
                    << "totQ_G\t"
                    << "totQ_T\t"
-                   << "totQ_D\t"
-                   << "totQ_I";
+                   << "totQ_D";
+                   //<< "totQ_I";
             for (size_t i = 0; i < m_num_samples; ++i)
             {
                 *m_out 
@@ -96,14 +96,14 @@ class PileDriverVisitor : public PileupVisitor {
                    << sample_cov[m_num_samples].g_cnt << "\t"
                    << sample_cov[m_num_samples].t_cnt << "\t"
                    << sample_cov[m_num_samples].del_cnt << "\t"
-                   << sample_cov[m_num_samples].ins_cnt << "\t"
+                   //<< sample_cov[m_num_samples].ins_cnt << "\t"
                 
                    << sample_cov[m_num_samples].a_tot_qual << "\t"
                    << sample_cov[m_num_samples].c_tot_qual << "\t"
                    << sample_cov[m_num_samples].g_tot_qual << "\t"
                    << sample_cov[m_num_samples].t_tot_qual << "\t"
-                   << ".\t"
-                   << sample_cov[m_num_samples].ins_tot_qual;
+                   << ".";
+                   //<< sample_cov[m_num_samples].ins_tot_qual;
 
             for (size_t i = 0; i < m_num_samples; ++i)
             {
@@ -122,10 +122,11 @@ class PileDriverVisitor : public PileupVisitor {
                   << sample_cov[i].t_cnt << "|" << sample_cov[i].t_tot_qual
                   << ","
                   // num(D)|totQual(D)
-                  << sample_cov[i].del_cnt << "|."
-                  << ","
+                  << sample_cov[i].del_cnt << "|.";
+                  // << sample_cov[i].del_cnt << "|."
+                  // << ","
                   // num(I)|totQual(I)
-                  << sample_cov[i].ins_cnt << "|" << sample_cov[i].ins_tot_qual;
+                  //<< sample_cov[i].ins_cnt << "|" << sample_cov[i].ins_tot_qual;
             }
             *m_out << endl;
         }
@@ -159,53 +160,56 @@ void profile_coverage(const PileupPosition& pileupData,
         
         short qual =  static_cast<short>(al.Qualities[alignmentpos]) - 33;
         
-        if ((base == "A") || (base == "a"))
-        {
-            sample_cov[file_id].a_cnt++;
-            sample_cov[file_id].a_tot_qual += qual;
-            
-            sample_cov[all_samples_idx].a_cnt++;
-            sample_cov[all_samples_idx].a_tot_qual += qual;
-        }
-        else if ((base == "C") || (base == "c"))
-        {
-            sample_cov[file_id].c_cnt++;
-            sample_cov[file_id].c_tot_qual += qual;
-            
-            sample_cov[all_samples_idx].c_cnt++;
-            sample_cov[all_samples_idx].c_tot_qual += qual;
-        }
-        else if ((base == "G") || (base == "g"))
-        {
-            sample_cov[file_id].g_cnt++;
-            sample_cov[file_id].g_tot_qual += qual;
-            
-            sample_cov[all_samples_idx].g_cnt++;
-            sample_cov[all_samples_idx].g_tot_qual += qual;
-        }
-        else if ((base == "T") || (base == "t"))
-        {
-            sample_cov[file_id].t_cnt++;
-            sample_cov[file_id].t_tot_qual += qual;
-            
-            sample_cov[all_samples_idx].t_cnt++;
-            sample_cov[all_samples_idx].t_tot_qual += qual;
-        }
-        else if (base == "*")
-        {
-            sample_cov[file_id].del_cnt++;
-            sample_cov[file_id].del_tot_qual = -1;
-            
-            sample_cov[all_samples_idx].del_cnt++;
-            sample_cov[all_samples_idx].del_tot_qual = -1;
-        }
-        else if (pileupData.PileupAlignments[i].IsNextInsertion)
+        if (pileupData.PileupAlignments[i].IsCurrentInsertion)
         {
             sample_cov[file_id].ins_cnt++;
             sample_cov[file_id].ins_tot_qual = qual;
             
             sample_cov[all_samples_idx].ins_cnt++;
             sample_cov[all_samples_idx].ins_tot_qual = qual;
+        }
+        else {
+        
+            if ((base == "A") || (base == "a"))
+            {
+                sample_cov[file_id].a_cnt++;
+                sample_cov[file_id].a_tot_qual += qual;
+            
+                sample_cov[all_samples_idx].a_cnt++;
+                sample_cov[all_samples_idx].a_tot_qual += qual;
+            }
+            else if ((base == "C") || (base == "c"))
+            {
+                sample_cov[file_id].c_cnt++;
+                sample_cov[file_id].c_tot_qual += qual;
+            
+                sample_cov[all_samples_idx].c_cnt++;
+                sample_cov[all_samples_idx].c_tot_qual += qual;
+            }
+            else if ((base == "G") || (base == "g"))
+            {
+                sample_cov[file_id].g_cnt++;
+                sample_cov[file_id].g_tot_qual += qual;
+            
+                sample_cov[all_samples_idx].g_cnt++;
+                sample_cov[all_samples_idx].g_tot_qual += qual;
+            }
+            else if ((base == "T") || (base == "t"))
+            {
+                sample_cov[file_id].t_cnt++;
+                sample_cov[file_id].t_tot_qual += qual;
+            
+                sample_cov[all_samples_idx].t_cnt++;
+                sample_cov[all_samples_idx].t_tot_qual += qual;
+            }
+            else if (base == "*")
+            {
+                sample_cov[file_id].del_cnt++;
+                sample_cov[file_id].del_tot_qual = -1;
+            
+                sample_cov[all_samples_idx].del_cnt++;
+                sample_cov[all_samples_idx].del_tot_qual = -1;
+            }
         }
     }
 }

@@ -202,12 +202,12 @@ void PileupEngine::PileupEnginePrivate::ParseAlignmentCigar(const BamAlignment& 
       
         // if op is MATCH
         if ( op.Type == 'M' ) {
-          
             // if match op overlaps current position
             if ( genomePosition + (int)op.Length > CurrentPosition ) {
               
                 // set pileup data
                 pileupAlignment.IsCurrentDeletion   = false;
+                pileupAlignment.IsCurrentInsertion  = false;
                 pileupAlignment.IsNextDeletion      = false;
                 pileupAlignment.IsNextInsertion     = false;
                 pileupAlignment.PositionInAlignment = positionInAlignment + (CurrentPosition - genomePosition);
@@ -284,12 +284,12 @@ void PileupEngine::PileupEnginePrivate::ParseAlignmentCigar(const BamAlignment& 
         
         // if op is DELETION
         else if ( op.Type == 'D' ) {
-          
             // if deletion op overlaps current position
             if ( genomePosition + (int)op.Length > CurrentPosition ) {
               
                 // set pileup data
                 pileupAlignment.IsCurrentDeletion   = true;
+                pileupAlignment.IsCurrentInsertion  = false;
                 pileupAlignment.IsNextDeletion      = false;
                 pileupAlignment.IsNextInsertion     = true;
                 pileupAlignment.PositionInAlignment = positionInAlignment + (CurrentPosition - genomePosition);
@@ -302,11 +302,14 @@ void PileupEngine::PileupEnginePrivate::ParseAlignmentCigar(const BamAlignment& 
         // if op is REF_SKIP
         else if ( op.Type == 'N' ) {
             genomePosition += op.Length;
+            pileupAlignment.IsCurrentInsertion  = false;
         }
         
         // if op is INSERTION or SOFT_CLIP
         else if ( op.Type == 'I' || op.Type == 'S' ) {
             positionInAlignment += op.Length;
+            if ( op.Type == 'I')
+                pileupAlignment.IsCurrentInsertion   = true;
         }
         
         // checl for beginning of new read segment
