@@ -1,4 +1,7 @@
-Piledriver.  A no frills, no assumptions pileup engine.
+Piledriver.
+===========
+
+**A no frills, no assumptions pileup engine.**
 
 
 Piledriver is built upon Derek Barnett's excellent BamTools library.
