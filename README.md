@@ -42,12 +42,12 @@ scores - thus, totQ(DEL) is always set to `.`:
 
 Consider following alignment snapshot:
 
-[](https://raw.github.com/arq5x/piledriver/master/img/igv.png)
+[](https://github.com/arq5x/piledriver/blob/master/img/igv.png)
 
 
 Here is the output from underlying BAM file:
 
-    bin/bamtools piledriver -in ../BEDTools/testingData/NA18152.bam | head -40
+    bin/bamtools piledriver -in NA18152.bam | head -40
     #chrom	start	end	num_A	num_C	num_G	num_T	num_D	num_I	totQ_A	totQ_C	totQ_G	totQ_T	totQ_D	totQ_I	sample_1
     chr1	554304	554305	0	0	0	5	0	0	0	0	0	117	.	0	0|0,0|0,0|0,5|117,0|.,0|0
     chr1	554305	554306	0	0	0	5	0	0	0	0	0	117	.	0	0|0,0|0,0|0,5|117,0|.,0|0
