@@ -5,6 +5,18 @@ Piledriver is built upon Derek Barnett's excellent BamTools library.
 https://github.com/pezmaster31/bamtools
 
 
+Installation
+============
+NOTE: You will need cmake.
+
+1. Clone the repository.
+2. `cd piledriver`
+3. `mkdir build`
+4. `cd build`
+5. `cmake ..`
+6. `make`
+
+
 Usage
 =====
 
@@ -89,18 +101,6 @@ Here is the output from underlying BAM file:
     chr1	554341	554342	0	0	0	9	0	0	0	0	0	235	.	0	0|0,0|0,0|0,9|235,0|.,0|0
     chr1	554342	554343	0	9	0	0	0	0	0	235	0	0	.	0	0|0,9|235,0|0,0|0,0|.,0|0
 
-
-
-Installation
-============
-NOTE: You will need cmake.
-
-1. Clone the repository.
-2. `cd piledriver`
-3. `mkdir build`
-4. `cd build`
-5. `cmake ..`
-6. `make`
 
 
 Source
