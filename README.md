@@ -42,7 +42,7 @@ scores - thus, totQ(DEL) is always set to `.`:
 
 Consider following alignment snapshot:
 
-[](https://raw.github.com/arq5x/piledriver/master/img/igv.png)
+![](https://raw.github.com/arq5x/piledriver/master/img/igv.png)
 
 
 Here is the output from underlying BAM file:
