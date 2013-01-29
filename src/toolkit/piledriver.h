@@ -1,30 +1,32 @@
 // ***************************************************************************
-// bamtools_coverage.h (c) 2010 Derek Barnett, Erik Garrison
+// bamtools_convert.h (c) 2010 Derek Barnett, Erik Garrison
 // Marth Lab, Department of Biology, Boston College
 // ---------------------------------------------------------------------------
-// Last modified: 1 August 2010
+// Last modified: 9 July 2010
 // ---------------------------------------------------------------------------
-// Prints coverage data for a single BAM file 
+// Converts between BAM and a number of other formats
 // ***************************************************************************
 
-#ifndef PILEUP_H
-#define PILEUP_H
+#ifndef PILE_H
+#define PILE_H
 
+#include <vector>
 #include "bamtools_tool.h"
 
-namespace BamTools {
+
+namespace BamTools { 
   
 class PileDriverTool : public AbstractTool {
   
     public:
         PileDriverTool(void);
         ~PileDriverTool(void);
-  
+
     public:
         int Help(void);
         int Run(int argc, char* argv[]); 
         
-    private:  
+    private: 
         struct PileDriverSettings;
         PileDriverSettings* m_settings;
         
@@ -45,9 +47,9 @@ struct SampleCoverage {
     size_t g_tot_qual;
     size_t t_tot_qual;
     int del_tot_qual;
-    size_t ins_tot_qual;
+    std::vector<std::string> ins_alleles;
 };
-
+  
 } // namespace BamTools
 
-#endif // PILEUP_H
+#endif // PILE_H
