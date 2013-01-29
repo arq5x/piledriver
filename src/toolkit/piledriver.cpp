@@ -346,10 +346,8 @@ int PileDriverTool::Run(int argc, char* argv[]) {
     // parse command line arguments
     Options::Parse(argc, argv, 1);
     
-    cout << "yes1\n";
     // initialize ConvertTool with settings
     m_impl = new PileDriverToolPrivate(m_settings);
-    cout << "yes2\n";
     
     // run ConvertTool, return success/fail
     if ( m_impl->Run() ) 
