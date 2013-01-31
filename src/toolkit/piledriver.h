@@ -35,19 +35,31 @@ class PileDriverTool : public AbstractTool {
 };
 
 struct SampleCoverage {
-    size_t a_cnt;
-    size_t c_cnt;
-    size_t g_cnt;
-    size_t t_cnt;
-    size_t del_cnt;
-    size_t ins_cnt;
+    size_t a_fwd_cnt;
+    size_t c_fwd_cnt;
+    size_t g_fwd_cnt;
+    size_t t_fwd_cnt;
+    size_t del_fwd_cnt;
+    size_t ins_fwd_cnt;
+    
+    size_t a_rev_cnt;
+    size_t c_rev_cnt;
+    size_t g_rev_cnt;
+    size_t t_rev_cnt;
+    size_t del_rev_cnt;
+    size_t ins_rev_cnt;
 
-    size_t a_tot_qual;
-    size_t c_tot_qual;
-    size_t g_tot_qual;
-    size_t t_tot_qual;
-    int del_tot_qual;
-    std::vector<std::string> ins_alleles;
+    size_t a_fwd_totqual;
+    size_t c_fwd_totqual;
+    size_t g_fwd_totqual;
+    size_t t_fwd_totqual;
+    std::vector<std::string> ins_fwd_alleles;
+    
+    size_t a_rev_totqual;
+    size_t c_rev_totqual;
+    size_t g_rev_totqual;
+    size_t t_rev_totqual;
+    std::vector<std::string> ins_rev_alleles;
 };
   
 } // namespace BamTools

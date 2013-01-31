@@ -398,7 +398,7 @@ PileDriverPileupFormatVisitor::~PileDriverPileupFormatVisitor(void) {
 }
 
 void PileDriverPileupFormatVisitor::Header() {
-    *m_out << "#chrom\t"
+    *m_out << "chrom\t"
            << "start\t"
            << "end\t"
            << "ref\t"
@@ -415,7 +415,32 @@ void PileDriverPileupFormatVisitor::Header() {
            << "totQ_C\t"
            << "totQ_G\t"
            << "totQ_T\t"
-           << "all_ins";
+           << "all_ins\t"
+           // forward strand
+           << "num_F_A\t"
+           << "num_F_C\t"
+           << "num_F_G\t"
+           << "num_F_T\t"
+           << "num_F_D\t"
+           << "num_F_I\t"
+           << "totQ_F_A\t"
+           << "totQ_F_C\t"
+           << "totQ_F_G\t"
+           << "totQ_F_T\t"
+           << "all_F_ins\t"
+           // reverse strand
+           << "num_R_A\t"
+           << "num_R_C\t"
+           << "num_R_G\t"
+           << "num_R_T\t"
+           << "num_R_D\t"
+           << "num_R_I\t"
+           << "totQ_R_A\t"
+           << "totQ_R_C\t"
+           << "totQ_R_G\t"
+           << "totQ_R_T\t"
+           << "all_R_ins";
+    
     for (size_t i = 0; i < m_num_samples; ++i)
     {
         *m_out 
@@ -467,12 +492,10 @@ void PileDriverPileupFormatVisitor::Visit(const PileupPosition& pileupData ) {
          pileupData.PileupAlignments.end();
     for ( ; pileupIter != pileupEnd; ++pileupIter ) {
         
-        stringstream bases("");
-        
         const PileupAlignment pa = (*pileupIter);
         const BamAlignment& ba = pa.Alignment;
         const size_t file_id = m_sample_map[ba.Filename];
-        const size_t all_samples_idx = sample_cov.size() - 1;
+        const size_t ovrl_idx = sample_cov.size() - 1;
         // if current base is not a DELETION
         if ( !pa.IsCurrentDeletion ) {
             
@@ -489,61 +512,114 @@ void PileDriverPileupFormatVisitor::Visit(const PileupPosition& pileupData ) {
             
             // if next position contains insertion
             if ( pa.IsNextInsertion ) {
-                //bases << '+' << pa.InsertionLength;
+                
+                stringstream ins_bases("");
+                
                 for (int i = 1; i <= pa.InsertionLength; ++i) {
                     char insertedBase = 
                         (char)ba.QueryBases.at(pa.PositionInAlignment + i);
-                    bases << insertedBase;
+                    ins_bases << insertedBase;
                 }
                 
-                sample_cov[file_id].ins_cnt++;
-                sample_cov[file_id].ins_alleles.push_back(bases.str());
-            
-                sample_cov[all_samples_idx].ins_cnt++;
-                sample_cov[all_samples_idx].ins_alleles.push_back(bases.str());
+                if (! ba.IsReverseStrand()) 
+                {
+                    sample_cov[file_id].ins_fwd_cnt++;
+                    sample_cov[file_id].ins_fwd_alleles.push_back(ins_bases.str());
+                    sample_cov[ovrl_idx].ins_fwd_cnt++;
+                    sample_cov[ovrl_idx].ins_fwd_alleles.push_back(ins_bases.str());
+                }
+                else {
+                    sample_cov[file_id].ins_rev_cnt++;
+                    sample_cov[file_id].ins_rev_alleles.push_back(ins_bases.str());
+                    sample_cov[ovrl_idx].ins_rev_cnt++;
+                    sample_cov[ovrl_idx].ins_rev_alleles.push_back(ins_bases.str());
+                }
             }
             
             if ((base == 'A') || (base == 'a'))
             {
-                sample_cov[file_id].a_cnt++;
-                sample_cov[file_id].a_tot_qual += qual;
-            
-                sample_cov[all_samples_idx].a_cnt++;
-                sample_cov[all_samples_idx].a_tot_qual += qual;
+                if (! ba.IsReverseStrand()) 
+                {
+                    sample_cov[file_id].a_fwd_cnt++;
+                    sample_cov[file_id].a_fwd_totqual += qual;
+                    sample_cov[ovrl_idx].a_fwd_cnt++;
+                    sample_cov[ovrl_idx].a_fwd_totqual += qual;
+                }
+                else 
+                {
+                    sample_cov[file_id].a_rev_cnt++;
+                    sample_cov[file_id].a_rev_totqual += qual;
+                    sample_cov[ovrl_idx].a_rev_cnt++;
+                    sample_cov[ovrl_idx].a_rev_totqual += qual;          
+                }
             }
             else if ((base == 'C') || (base == 'c'))
             {
-                sample_cov[file_id].c_cnt++;
-                sample_cov[file_id].c_tot_qual += qual;
-            
-                sample_cov[all_samples_idx].c_cnt++;
-                sample_cov[all_samples_idx].c_tot_qual += qual;
+                if (! ba.IsReverseStrand()) 
+                {
+                    sample_cov[file_id].c_fwd_cnt++;
+                    sample_cov[file_id].c_fwd_totqual += qual;
+                    sample_cov[ovrl_idx].c_fwd_cnt++;
+                    sample_cov[ovrl_idx].c_fwd_totqual += qual;
+                }
+                else 
+                {
+                    sample_cov[file_id].c_rev_cnt++;
+                    sample_cov[file_id].c_rev_totqual += qual;
+                    sample_cov[ovrl_idx].c_rev_cnt++;
+                    sample_cov[ovrl_idx].c_rev_totqual += qual;          
+                }
+
             }
             else if ((base == 'G') || (base == 'g'))
             {
-                sample_cov[file_id].g_cnt++;
-                sample_cov[file_id].g_tot_qual += qual;
-            
-                sample_cov[all_samples_idx].g_cnt++;
-                sample_cov[all_samples_idx].g_tot_qual += qual;
+                if (! ba.IsReverseStrand()) 
+                {
+                    sample_cov[file_id].g_fwd_cnt++;
+                    sample_cov[file_id].g_fwd_totqual += qual;
+                    sample_cov[ovrl_idx].g_fwd_cnt++;
+                    sample_cov[ovrl_idx].g_fwd_totqual += qual;
+                }
+                else 
+                {
+                    sample_cov[file_id].g_rev_cnt++;
+                    sample_cov[file_id].g_rev_totqual += qual;
+                    sample_cov[ovrl_idx].g_rev_cnt++;
+                    sample_cov[ovrl_idx].g_rev_totqual += qual;          
+                }
+
             }
             else if ((base == 'T') || (base == 't'))
             {
-                sample_cov[file_id].t_cnt++;
-                sample_cov[file_id].t_tot_qual += qual;
-            
-                sample_cov[all_samples_idx].t_cnt++;
-                sample_cov[all_samples_idx].t_tot_qual += qual;
+                if (! ba.IsReverseStrand()) 
+                {
+                    sample_cov[file_id].t_fwd_cnt++;
+                    sample_cov[file_id].t_fwd_totqual += qual;
+                    sample_cov[ovrl_idx].t_fwd_cnt++;
+                    sample_cov[ovrl_idx].t_fwd_totqual += qual;
+                }
+                else 
+                {
+                    sample_cov[file_id].t_rev_cnt++;
+                    sample_cov[file_id].t_rev_totqual += qual;
+                    sample_cov[ovrl_idx].t_rev_cnt++;
+                    sample_cov[ovrl_idx].t_rev_totqual += qual;          
+                }
             }
         }
         // it is a deletion
         else {
-            sample_cov[file_id].del_cnt++;
-            sample_cov[file_id].del_tot_qual = -1;
-            
-            sample_cov[all_samples_idx].del_cnt++;
-            sample_cov[all_samples_idx].del_tot_qual = -1;
-            
+            if (! ba.IsReverseStrand()) 
+            {
+                sample_cov[file_id].del_fwd_cnt++;
+                sample_cov[ovrl_idx].del_fwd_cnt++;
+            }
+            else 
+            {
+                sample_cov[file_id].del_rev_cnt++;
+                sample_cov[ovrl_idx].del_rev_cnt++;
+            }
+
             total_alt_depth++;
         }
     }
@@ -551,21 +627,49 @@ void PileDriverPileupFormatVisitor::Visit(const PileupPosition& pileupData ) {
     // ----------------------
     // print results 
     
+    stringstream all_ins_fwd_alleles("");
+    stringstream all_ins_rev_alleles("");
     stringstream all_ins_alleles;
-    if (sample_cov[m_num_samples].ins_alleles.size() > 0) {
+    if (sample_cov[m_num_samples].ins_fwd_alleles.size() > 0) 
+    {
         
-        for(size_t s = 0; s < sample_cov[m_num_samples].ins_alleles.size(); ++s)
+        for(size_t s = 0; s < sample_cov[m_num_samples].ins_fwd_alleles.size(); ++s)
         {
             if(s != 0)
-                all_ins_alleles << ",";
-            all_ins_alleles << sample_cov[m_num_samples].ins_alleles[s];
+                all_ins_fwd_alleles << ",";
+            all_ins_fwd_alleles << sample_cov[m_num_samples].ins_fwd_alleles[s];
         }
+    }
+    else {
+        all_ins_fwd_alleles << ".";
+    }
+    
+    if (sample_cov[m_num_samples].ins_rev_alleles.size() > 0) 
+    {
+        
+        for(size_t s = 0; s < sample_cov[m_num_samples].ins_rev_alleles.size(); ++s)
+        {
+            if(s != 0)
+                all_ins_rev_alleles << ",";
+            all_ins_rev_alleles << sample_cov[m_num_samples].ins_rev_alleles[s];
+        }
+    }
+    else {
+        all_ins_rev_alleles << ".";
+    }
+    
+    if ((sample_cov[m_num_samples].ins_rev_alleles.size() > 0) 
+        ||
+        (sample_cov[m_num_samples].ins_rev_alleles.size() > 0))
+    {
+        all_ins_alleles << all_ins_fwd_alleles.str() << all_ins_rev_alleles.str();
     }
     else {
         all_ins_alleles << ".";
     }
 
-        
+    size_t all_idx = m_num_samples;
+    
     const string TAB = "\t";
     *m_out << referenceName       << TAB 
            << position            << TAB 
@@ -574,54 +678,106 @@ void PileDriverPileupFormatVisitor::Visit(const PileupPosition& pileupData ) {
            << total_depth         << TAB
            << total_ref_depth     << TAB
            << total_alt_depth     << TAB
+
            // overall allele counts
-           << sample_cov[m_num_samples].a_cnt << TAB
-           << sample_cov[m_num_samples].c_cnt << TAB
-           << sample_cov[m_num_samples].g_cnt << TAB
-           << sample_cov[m_num_samples].t_cnt << TAB
-           << sample_cov[m_num_samples].del_cnt << TAB
-           << sample_cov[m_num_samples].ins_cnt << TAB
-           // overall allele qualities
-           << sample_cov[m_num_samples].a_tot_qual << TAB
-           << sample_cov[m_num_samples].c_tot_qual << TAB
-           << sample_cov[m_num_samples].g_tot_qual << TAB
-           << sample_cov[m_num_samples].t_tot_qual << TAB
-           << all_ins_alleles.str();
+           << sample_cov[all_idx].a_fwd_cnt + sample_cov[all_idx].a_rev_cnt << TAB
+           << sample_cov[all_idx].c_fwd_cnt + sample_cov[all_idx].c_rev_cnt << TAB
+           << sample_cov[all_idx].g_fwd_cnt + sample_cov[all_idx].g_rev_cnt << TAB
+           << sample_cov[all_idx].t_fwd_cnt + sample_cov[all_idx].t_rev_cnt << TAB
+           << sample_cov[all_idx].del_fwd_cnt + sample_cov[all_idx].del_rev_cnt << TAB
+           << sample_cov[all_idx].ins_fwd_cnt + sample_cov[all_idx].ins_rev_cnt << TAB
+
+           // overall allele qualities (and insertion alleles)
+           << sample_cov[all_idx].a_fwd_totqual + sample_cov[all_idx].a_rev_totqual << TAB
+           << sample_cov[all_idx].c_fwd_totqual + sample_cov[all_idx].c_rev_totqual << TAB
+           << sample_cov[all_idx].g_fwd_totqual + sample_cov[all_idx].g_rev_totqual << TAB
+           << sample_cov[all_idx].t_fwd_totqual + sample_cov[all_idx].t_rev_totqual << TAB
+           << all_ins_alleles.str() << TAB
+    
+           // overall forward allele counts
+           << sample_cov[all_idx].a_fwd_cnt << TAB
+           << sample_cov[all_idx].c_fwd_cnt << TAB
+           << sample_cov[all_idx].g_fwd_cnt << TAB
+           << sample_cov[all_idx].t_fwd_cnt << TAB
+           << sample_cov[all_idx].del_fwd_cnt  << TAB
+           << sample_cov[all_idx].ins_fwd_cnt  << TAB
+
+           // overall forward allele total qualities (and insertion alleles)
+           << sample_cov[all_idx].a_fwd_totqual << TAB
+           << sample_cov[all_idx].c_fwd_totqual << TAB
+           << sample_cov[all_idx].g_fwd_totqual << TAB
+           << sample_cov[all_idx].t_fwd_totqual << TAB
+           << all_ins_fwd_alleles.str() << TAB
+
+           // overall reverse allele counts
+           << sample_cov[all_idx].a_rev_cnt << TAB
+           << sample_cov[all_idx].c_rev_cnt << TAB
+           << sample_cov[all_idx].g_rev_cnt << TAB
+           << sample_cov[all_idx].t_rev_cnt << TAB
+           << sample_cov[all_idx].del_rev_cnt  << TAB
+           << sample_cov[all_idx].ins_rev_cnt  << TAB
+
+           // overall reverse allele total qualities (and insertion alleles)
+           << sample_cov[all_idx].a_rev_totqual << TAB
+           << sample_cov[all_idx].c_rev_totqual << TAB
+           << sample_cov[all_idx].g_rev_totqual << TAB
+           << sample_cov[all_idx].t_rev_totqual << TAB
+           << all_ins_rev_alleles.str();
+           
 
     for (size_t i = 0; i < m_num_samples; ++i)
     {        
-        stringstream sample_ins_alleles;
-        if (sample_cov[i].ins_alleles.size() > 0) {
+        stringstream sample_ins_fwd_alleles, sample_ins_rev_alleles;
         
-            for(size_t s = 0; s < sample_cov[i].ins_alleles.size(); ++s)
+        if (sample_cov[i].ins_fwd_alleles.size() > 0) {
+        
+            for(size_t s = 0; s < sample_cov[i].ins_fwd_alleles.size(); ++s)
             {
                 if(s != 0)
-                    sample_ins_alleles << ",";
-                sample_ins_alleles << sample_cov[i].ins_alleles[s];
+                    sample_ins_fwd_alleles << ",";
+                sample_ins_fwd_alleles << sample_cov[i].ins_fwd_alleles[s];
             }
         }
         else {
-            sample_ins_alleles << ".";
+            sample_ins_fwd_alleles << ".";
+        }
+        
+        if (sample_cov[i].ins_rev_alleles.size() > 0) {
+        
+            for(size_t s = 0; s < sample_cov[i].ins_rev_alleles.size(); ++s)
+            {
+                if(s != 0)
+                    sample_ins_rev_alleles << ",";
+                sample_ins_rev_alleles << sample_cov[i].ins_rev_alleles[s];
+            }
+        }
+        else {
+            sample_ins_rev_alleles << ".";
         }
         
         *m_out 
           << TAB
-          // num(A)|totQual(A)
-          << sample_cov[i].a_cnt << "|" << sample_cov[i].a_tot_qual
+          // num_fwd(A)|totqual_fwd(A)|num_rev(A)|totqual_rev(A)
+          << sample_cov[i].a_fwd_cnt << "|" << sample_cov[i].a_fwd_totqual << "|"
+          << sample_cov[i].a_rev_cnt << "|" << sample_cov[i].a_rev_totqual 
           << ","
-          // num(C)|totQual(C)
-          << sample_cov[i].c_cnt << "|" << sample_cov[i].c_tot_qual
+          // num_fwd(C)|totqual_fwd(C)|num_rev(C)|totqual_rev(C)
+          << sample_cov[i].c_fwd_cnt << "|" << sample_cov[i].c_fwd_totqual << "|"
+          << sample_cov[i].c_rev_cnt << "|" << sample_cov[i].c_rev_totqual
           << ","
-          // num(G)|totQual(G)
-          << sample_cov[i].g_cnt << "|" << sample_cov[i].g_tot_qual
+          // num_fwd(G)|totqual_fwd(G)|num_rev(G)|totqual_rev(G)
+          << sample_cov[i].g_fwd_cnt << "|" << sample_cov[i].g_fwd_totqual << "|"
+          << sample_cov[i].g_rev_cnt << "|" << sample_cov[i].g_rev_totqual
           << ","
-          // num(T)|totQual(T)
-          << sample_cov[i].t_cnt << "|" << sample_cov[i].t_tot_qual
+          // num_fwd(T)|totqual_fwd(T)|num_rev(T)|totqual_rev(T)
+          << sample_cov[i].t_fwd_cnt << "|" << sample_cov[i].t_fwd_totqual << "|"
+          << sample_cov[i].t_rev_cnt << "|" << sample_cov[i].t_rev_totqual
           << ","
-          // num(D)|totQual(D)
-          << sample_cov[i].del_cnt << "|."
-          // num(I)|totQual(I)
-          << sample_cov[i].ins_cnt << "|" << sample_ins_alleles.str();
+          // num_fwd(D)|totqual_fwd(D)|num_rev(D)|totqual_rev(D)
+          << sample_cov[i].del_fwd_cnt << "|." << sample_cov[i].del_rev_cnt << "|."
+          << ","
+          // ins_fwd|ins_rev
+          << sample_ins_fwd_alleles.str() << "|" << sample_ins_rev_alleles.str();
     }
     *m_out << endl;
 }
