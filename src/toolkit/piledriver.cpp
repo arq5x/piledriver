@@ -313,7 +313,7 @@ PileDriverTool::PileDriverTool(void)
                             Options::StandardOut());
     
     Options::AddValueOption("-region", "REGION", 
-                            "genomic region. Index file is recommended for better performance, and is used automatically if it exists. See \'bamtools help index\' for more details on creating one", "", 
+                            "genomic region. Index file is recommended for better performance, and is used automatically if it exists. Regions specified using the following format: -region chr1:START..END", "", 
                             m_settings->HasRegion, 
                             m_settings->Region, 
                             IO_Opts);
