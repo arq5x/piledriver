@@ -478,9 +478,9 @@ void PileDriverPileupFormatVisitor::Visit(const PileupPosition& pileupData ) {
     }
     
     // get count of alleles at this position
-    const size_t total_depth = pileupData.PileupAlignments.size();
-    size_t total_ref_depth = 0;
-    size_t total_alt_depth = 0;
+    const uint64_t total_depth = pileupData.PileupAlignments.size();
+    uint64_t total_ref_depth = 0;
+    uint64_t total_alt_depth = 0;
     
     // coverage info for each sample
     vector<SampleCoverage> sample_cov(m_num_samples + 1);

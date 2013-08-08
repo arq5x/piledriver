@@ -35,30 +35,30 @@ class PileDriverTool : public AbstractTool {
 };
 
 struct SampleCoverage {
-    size_t a_fwd_cnt;
-    size_t c_fwd_cnt;
-    size_t g_fwd_cnt;
-    size_t t_fwd_cnt;
-    size_t del_fwd_cnt;
-    size_t ins_fwd_cnt;
+    uint64_t a_fwd_cnt;
+    uint64_t c_fwd_cnt;
+    uint64_t g_fwd_cnt;
+    uint64_t t_fwd_cnt;
+    uint64_t del_fwd_cnt;
+    uint64_t ins_fwd_cnt;
     
-    size_t a_rev_cnt;
-    size_t c_rev_cnt;
-    size_t g_rev_cnt;
-    size_t t_rev_cnt;
-    size_t del_rev_cnt;
-    size_t ins_rev_cnt;
+    uint64_t a_rev_cnt;
+    uint64_t c_rev_cnt;
+    uint64_t g_rev_cnt;
+    uint64_t t_rev_cnt;
+    uint64_t del_rev_cnt;
+    uint64_t ins_rev_cnt;
 
-    size_t a_fwd_totqual;
-    size_t c_fwd_totqual;
-    size_t g_fwd_totqual;
-    size_t t_fwd_totqual;
+    uint64_t a_fwd_totqual;
+    uint64_t c_fwd_totqual;
+    uint64_t g_fwd_totqual;
+    uint64_t t_fwd_totqual;
     std::vector<std::string> ins_fwd_alleles;
     
-    size_t a_rev_totqual;
-    size_t c_rev_totqual;
-    size_t g_rev_totqual;
-    size_t t_rev_totqual;
+    uint64_t a_rev_totqual;
+    uint64_t c_rev_totqual;
+    uint64_t g_rev_totqual;
+    uint64_t t_rev_totqual;
     std::vector<std::string> ins_rev_alleles;
 };
   
